@@ -24,7 +24,13 @@ jobs:
           node-version: "22.x"
           cache: "npm"
       - run: npm install
-      - run: npm run build --if-present
+      - run: npm run build
+        env:
+          ELEVENTY_ENV: prod
+      - name: Fix asset paths for GitHub Pages
+        run: |
+          find dist -name "*.html" -exec sed -i \
+            's|href="/|href="/Heroku-documentations-md/|g; s|src="/|src="/Heroku-documentations-md/|g' {} \;
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
