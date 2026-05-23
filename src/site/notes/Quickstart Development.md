@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/quickstart-development/","dg-note-properties":{}}
+{"dg-publish":true,"permalink":"/quickstart-development/","dgEnableSearch":true,"dgLinkPreview":true,"dg-note-properties":{}}
 ---
 
 In order to write your first module, let's take a look at the basic structure:
