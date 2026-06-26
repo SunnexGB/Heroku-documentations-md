@@ -8,7 +8,7 @@
 > [!quote]
 > *ℹ️ Кастомный текст сообщения. Может содержать ключевые слова {me}, {version}, {build}, {prefix}, {platform}, {upd}, {uptime}, {cpu_usage}, {ram_usage}, {branch}, {hostname}, {user}, {os}, {kernel}, {cpu}, {ping}*
 
-***~~изъяснение каждого плейсхолдера:~~***
+***изъяснение каждого плейсхолдера:***
 `{me}` -  **отображает ваш ник в тг**
  `{version}` -  **отображает текущую версию юб**
  `{build}` -  **отображает номер билда(показывает номер коммита)**
@@ -56,8 +56,8 @@ Ver    : {version} ({branch}@{build})**
 <tg-emoji emoji-id=5873022839866527761>⚪️</tg-emoji>| <b>Update : {upd}</b>
 ```
 далее это нужно применить,пишем `.fcfg модуль параметр текст`
-для **~~info~~** это `.fcfg Herokuinfo custom_message`
-для **~~ping~~** это `.fcfg Tester custom_message`
+для **info** это `.fcfg Herokuinfo custom_message`
+для **ping** это `.fcfg Tester custom_message`
 ━━━━━━━━━━━━━━━━━━━━━━━━
 в итоге вот что получилось у меня
 > [!quote]
