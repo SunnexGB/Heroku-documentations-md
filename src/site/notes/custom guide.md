@@ -1,8 +1,9 @@
 ---
-dg-publish: true
+{"dg-publish":true,"permalink":"/custom-guide/","dg-note-properties":{}}
 ---
+
 Гайд для кастомизирования **инфо/пинг/хелп** и других:
-чтобы сделать кастомный **инфо/пинг/хелп** и в целом все что угодно нам помогут ~~плейсхолдеры~~
+чтобы сделать кастомный **инфо/пинг/хелп** и в целом все что угодно нам помогут **плейсхолдеры**
 вот список дефолтных(основных) плейсхолдеров
 > [!quote]
 > *ℹ️ Кастомный текст сообщения. Может содержать ключевые слова {me}, {version}, {build}, {prefix}, {platform}, {upd}, {uptime}, {cpu_usage}, {ram_usage}, {branch}, {hostname}, {user}, {os}, {kernel}, {cpu}, {ping}*
@@ -29,31 +30,30 @@ dg-publish: true
 
 {user}@debian
 ━━━━━━━━━━━━━━━━━━━━━━━━
-**OS     : **`{os}`
-**Ver    : {version} ({branch}@{build})**
+**OS     : `{os}`
+Ver    : {version} ({branch}@{build})**
 **Up     : {uptime}**
 **RAM    : {ram_usage}**
 **Load   : {cpu_usage}%**
 **Ping   : {ping}ms**
 ━━━━━━━━━━━━━━━━━━━━━━━━
 ⚙️| **CPU : {cpu}**
-⚪️| **Update : {upd} **
-
+⚪️| **Update : {upd} 
 
 после чего мы скидываем это сообщение в чат и в отвен на него пишем `.e r.text` ,в итоге мы получим следящее:
 
 ```python
 {user}@debian
 ━━━━━━━━━━━━━━━━━━━━━━━━
-&lt;b&gt;OS     : &lt;/b&gt;&lt;code&gt;{os}&lt;/code&gt;
-&lt;b&gt;Ver    : {version} ({branch}@{build})&lt;/b&gt;
-&lt;b&gt;Up     : {uptime}&lt;/b&gt;
-&lt;b&gt;RAM    : {ram_usage}&lt;/b&gt;
-&lt;b&gt;Load   : {cpu_usage}%&lt;/b&gt;
-&lt;b&gt;Ping   : {ping}ms&lt;/b&gt;
+<b>OS     : </b><code>{os}</code>
+<b>Ver    : {version} ({branch}@{build})</b>
+<b>Up     : {uptime}</b>
+<b>RAM    : {ram_usage}</b>
+<b>Load   : {cpu_usage}%</b>
+<b>Ping   : {ping}ms</b>
 ━━━━━━━━━━━━━━━━━━━━━━━━
-&lt;tg-emoji emoji-id=6021582331251268218&gt;⚙️&lt;/tg-emoji&gt;| &lt;b&gt;CPU : {cpu}&lt;/b&gt;
-&lt;tg-emoji emoji-id=5873022839866527761&gt;⚪️&lt;/tg-emoji&gt;| &lt;b&gt;Update : {upd}&lt;/b&gt;
+<tg-emoji emoji-id=6021582331251268218>⚙️</tg-emoji>| <b>CPU : {cpu}</b>
+<tg-emoji emoji-id=5873022839866527761>⚪️</tg-emoji>| <b>Update : {upd}</b>
 ```
 далее это нужно применить,пишем `.fcfg модуль параметр текст`
 для **~~info~~** это `.fcfg Herokuinfo custom_message`
