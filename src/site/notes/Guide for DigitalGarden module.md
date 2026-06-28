@@ -27,12 +27,15 @@
 ![module_settings.png](/img/user/images/dg_module/module_settings.png)
 
 Как получить ==repo_name== и ==username== я не буду объяснять, но вот как получить `github_token` я вам расскажу.
-1. Для начала переходим на [эту страницу](https://github.com/settings/personal-access-tokens/new)
-2. ![base_info.png](/img/user/images/dg_module/base_info.png)
+Для начала переходим на [эту страницу](https://github.com/settings/personal-access-tokens/new)
+
+![base_info.png](/img/user/images/dg_module/base_info.png)
 тут нам нужно указать имя нашего токена(ключа).
-3. ![repo_accsess.png](/img/user/images/dg_module/repo_accsess.png)
+
+![repo_accsess.png](/img/user/images/dg_module/repo_accsess.png)
 Выбираем `Only select repositories` и уже там выбираем наш репозиторий который мы сгенерировали ранее.
-4. ![permissions.png](/img/user/images/dg_module/permissions.png)
+
+![permissions.png](/img/user/images/dg_module/permissions.png)
 Тут нам нужно нажать на `Add permisions` и после чего нужно будет выбрать 2 вещи:
 - ==Contents== 
 ![permissions_contents.png](/img/user/images/dg_module/permissions_contents.png)
