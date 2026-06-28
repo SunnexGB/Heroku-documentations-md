@@ -73,4 +73,5 @@
 | `dg-metatags`            | Позволяет задать SEO/OpenGraph-метатеги (`description`, `og:image`, `og:title` и др.)                         |
 | `dg-content-classes`     | Добавляет CSS-классы к странице для индивидуального оформления.                                               |
 | `dg-note-icon`           | Назначает иконку заметке.                                                                                     |
+
 Больше можно узнать [тут!](https://docs.forestry.md/getting-started/03-note-settings/)
