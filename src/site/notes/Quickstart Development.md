@@ -66,7 +66,7 @@ async def mycommand(self, message: Message):
 - `only_audios` - ловить только сообщения с аудио
 - `only_docs` - ловить только сообщения с доками
 - `only_stickers` - ловить только сообщения со стикерами
-- `only_inline` - ловить только инлайн-запросы
+- `only_inline` - ловить только инлайн запросы
 - `only_channels` - ловить только сообщения из каналов
 - `only_groups` - ловить только сообщения из групп
 - `only_pm` - ловить только личку
@@ -209,5 +209,18 @@ self.set("state", self._state)
 ```
 
 ---
+
+## Связанные статьи
+
+- [Home](app://obsidian.md/Home)
+- [Quickstart Development](app://obsidian.md/Quickstart%20Development)
+- [Utils](app://obsidian.md/Utils)
+- [Decorators](app://obsidian.md/Decorators)
+- [Config](app://obsidian.md/Config)
+- [Watchers](app://obsidian.md/Watchers)
+
+---
+
+[[Extended documentation/Quickstart\| <=]][[Extended documentation/Home\| На главную]][[Extended documentation/Scopes\| =>]]
 
 # By SunnexGB
