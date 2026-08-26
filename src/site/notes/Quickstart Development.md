@@ -221,6 +221,6 @@ self.set("state", self._state)
 
 ---
 
-[[Extended documentation/Quickstart\| <=]][[Extended documentation/Home\| На главную]][[Extended documentation/Scopes\| =>]]
+[[Extended_documentation/Quickstart\| <=]][[Extended_documentation/Home\| На главную]][[Extended_documentation/Scopes\| =>]]
 
 # By SunnexGB

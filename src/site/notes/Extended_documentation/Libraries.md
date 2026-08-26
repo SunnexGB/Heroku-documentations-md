@@ -1,0 +1,222 @@
+---
+{"dg-publish":true,"permalink":"/extended-documentation/libraries/","dgEnableSearch":true,"dg-note-properties":{}}
+---
+
+# Библиотеки
+Если у вас есть код, который используется сразу в нескольких модулях, вы можете упаковать его в библиотеку и импортировать везде, где это необходимо.
+Для общих библиотек предусмотрена отдельная система конфигурации.
+
+## Например:
+
+```python
+import io
+import numpy as np
+from PIL import Image, ImageFilter, ImageEnhance, ImageOps
+from .. import loader
+
+base = 0x2800
+invert_map = {chr(base + c): chr(base + (c ^ 0xFF)) for c in range(256)}
+
+class AsciiLib(loader.Library):
+    developer = "@SunnexGB"
+    
+    def resize(self, img):
+        if img.width > 768:
+            img = img.resize((768, int(img.height * 768 / img.width)), Image.LANCZOS)
+        w = img.width - img.width % 4
+        h = img.height - img.height % 4
+        if w != img.width or h != img.height:
+            img = img.resize((w, h), Image.LANCZOS)
+        return img
+
+    def mode(self, img, threshold, contrast):
+        gray = img.convert("L")
+        edges = ImageOps.invert(gray.filter(ImageFilter.FIND_EDGES))
+        contrast_img = ImageEnhance.Contrast(img).enhance(contrast).convert("L")
+        e = np.array(edges, dtype=np.float32) / 255.0
+        c = np.array(contrast_img, dtype=np.float32) / 255.0
+        blended = Image.fromarray((e * c * 255).astype(np.uint8), "L")
+        t = int(threshold * 255)
+        processed = blended.point(lambda p: 255 if p > t else 0, "L")
+        return processed, t
+
+    def braille(self, img, threshold, width):
+        cw = width * 2
+        o = -(-round(cw * img.height / img.width) // 4)
+        ch = 4 * o
+        px = np.array(img.resize((cw, ch), Image.LANCZOS).convert("L"))
+        order = [(0,0),(1,0),(2,0),(0,1),(1,1),(2,1),(3,0),(3,1)]
+        rows = []
+        for rs in range(0, ch, 4):
+            line = []
+            for cs in range(0, cw, 2):
+                grays = [
+                    int(px[rs+dy, cs+dx]) if (rs+dy < ch and cs+dx < cw) else 255
+                    for dy, dx in order
+                ]
+                bits = list(reversed([1 if g < threshold else 0 for g in grays]))
+                code = int("".join(str(b) for b in bits), 2)
+                line.append(chr(base + code))
+            rows.append("".join(line))
+        return rows
+
+  
+
+    def trim(self, lines):
+        blank = "\u2800"
+        while lines and all(c == blank for c in lines[0]):
+            lines = lines[1:]
+        while lines and all(c == blank for c in lines[-1]):
+            lines = lines[:-1]
+        if not lines:
+            return lines
+        left = min(next((i for i,c in enumerate(r) if c!=blank), len(r)) for r in lines)
+        right = min(next((i for i,c in enumerate(reversed(r)) if c!=blank), len(r)) for r in lines)
+        return [r[left: len(r)-right if right else len(r)] for r in lines]
+    def invert(self, lines):
+        return ["".join(invert_map.get(c,c) for c in l) for l in lines]
+    def fit(self, img, threshold, chars, width):
+        lo, hi = 5, 200
+        best = ""
+        for _ in range(14):
+            mid = (lo + hi)//2
+            lines = self.trim(self.braille(img, threshold, mid))
+            art = "\n".join(lines)
+            if len(art) <= chars:
+                best = art
+                lo = mid + 1
+            else:
+                hi = mid - 1
+        return best
+
+    def convert(self, data, width=50, threshold=0.65, contrast_boost=2.0, invert=False, target_chars=0):
+        buf = io.BytesIO(data)
+        img = Image.open(buf)
+        img.load()
+        buf.close()
+        img = img.convert("RGB")
+        img = self.resize(img)
+        processed, t = self.mode(img, threshold, contrast_boost)
+        if target_chars > 0:
+            art = self.fit(processed, t, target_chars, width)
+        else:
+            art = "\n".join(self.trim(self.braille(processed, t, width)))
+        if invert and art:
+            art = "\n".join(self.invert(art.split("\n")))
+        return art
+```
+
+## Подробная информация о структуре библиотеки:
+
+```python
+# -----------------------------------------------------------------------------
+# Это пример кода библиотеки
+# ⚠️ Любые скоупы, указанные здесь, будут проигнорированы, включая # requires:
+# requires: example_pypi_package - ЭТА СТРОКА НИЧЕГО НЕ ДЕЛАЕТ
+
+from .. import loader
+import random
+import logging
+
+# Название класса каждой библиотеки должно заканчиваться на `Lib` 
+# и быть подклассом `loader.Library`
+#            👇         👇
+class ExampleLib(loader.Library):
+    # Таким образом можно указать разработчика библиотеки:
+    developer = "@hikariatama"
+
+    # Объявляйте конфигурацию библиотеки в `__init__`:
+    def __init__(self):
+        # Использование loader.ModuleConfig вызовет ошибку!
+        self.config = loader.LibraryConfig(
+            loader.ConfigValue(
+                "example_option",
+                "default",
+                "Описание примера",
+                validator=loader.validators.String(),
+            )
+        )
+
+    async def init(self):
+        ...  # Выполнение действий при инициализации
+
+    # ----------------------------------------------
+    
+    # ----------------------------------------------
+    # Методы могут быть синхронными или асинхронными:
+    def example_method(self) -> str:
+        # self._client и self._db доступны автоматически,
+        # их не нужно импортировать явно
+        return (
+            "anime neko"
+            + random.choice(["girl", "boy"])
+            + " --> "
+            + self._client._tg_id
+        )
+
+    async def example_async(self):
+        await self._client.send_message("me", "Hello!")
+# -----------------------------------------------------------------------------
+```
+
+## Подключение библеотеки.
+Свою библиотеку вы можете подключить данным способом:
+
+```python
+async def client_ready(self, client, db):
+    ...
+    self.example = await self.import_lib("https://link.to.your.server/example.py")
+
+    logging.info(self.example.example_method())
+    await self.example.example_async()
+```
+
+>[! danger] Важно!
+>Если библиотека вызывает ошибку или недоступна (ошибки 404, 403 и т. д.), модуль будет **ВЫГРУЖЕН ИЗ БАЗЫ ДАННЫХ** и больше не будет загружаться при перезапусках.
+
+Если вы хотите избежать выгрузки модуля, используйте пример ниже или обрабатывайте ошибки вручную в коде модуля:
+
+```python
+async def client_ready(self, client, db):
+    try:
+        self.example = await self.import_lib(...)
+    except Exception:
+        self.example = None
+    if self.example:
+        self.example.example_method()
+    else:
+        logging.warning("Библиотека недоступна")
+```
+
+> [!Note] Важно
+> Метод `client_ready` описан в [[Extended_documentation/Quickstart#Документация по структуре\|основах разработки]]
+
+Если вы не хотите обрабатывать ошибку при импорте, то используйте:
+
+```python
+async def client_ready(self, client, db):
+    ...
+    self.example = await self.import_lib(
+        "https://link.to.your.server/example.py",
+        suspend_on_error=True,  # 👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+    )
+
+    logging.info(self.example.example_method())
+    await self.example.example_async()
+```
+
+> [!info] Важно
+> Скоупы, указанные в библиотеке, игнорируются. См. [[Extended_documentation/Scopes#Scopes\|Scopes]]
+
+В этом случае, если Heroku не сможет загрузить библиотеку, она просто **приостановит** работу вашего модуля. Модуль не будет выгружен из БД, поэтому пользователь сможет продолжить им пользоваться после перезапуска, как только библиотека снова станет доступна.
+
+---
+
+# Связанные статьи
+
+- [[Extended_documentation/Home\|Главная]]
+- [[Extended_documentation/Scopes\|Скоупы]]
+- [[Extended_documentation/Decorators\|Декораторы]]
+---
+
+[[Extended_documentation/Config\|<=]] [[Extended_documentation/Home\|На главную]] [[Extended_documentation/Decorators\|=>]]
